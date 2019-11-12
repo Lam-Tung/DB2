@@ -11,7 +11,7 @@ public class Question {
   public Question() {
   }
 
-  public Question(int ID, String challenge, ArrayList<Answer> choices, int solution, String type) {
+  public Question(int ID, String challenge, ArrayList<Answer> choices) {
     this.ID = ID;
     this.challenge = challenge;
     this.choices = choices;
@@ -31,5 +31,13 @@ public class Question {
 
   public void setChallenge(String challenge) {
     this.challenge = challenge;
+  }
+
+  public ArrayList<Answer> getChoices() {
+    return choices;
+  }
+
+  public void setChoices(ArrayList<Answer> choices) {
+    this.choices = choices;
   }
 }
