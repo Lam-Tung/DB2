@@ -2,6 +2,9 @@ package de.hda.fbi.db2.stud.entity;
 
 import java.util.ArrayList;
 
+/**
+ * Category class
+ */
 public class Category {
   private String name;
   private ArrayList<Question> questionlist;

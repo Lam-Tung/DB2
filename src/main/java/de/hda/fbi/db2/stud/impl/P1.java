@@ -7,9 +7,12 @@ import de.hda.fbi.db2.stud.entity.Question;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * P1 class is an implementation of the Lab01Data.java
+ */
 public class P1 extends Lab01Data {
   private List<Object> questions = new ArrayList<>();
-  private List<Object> categories= new ArrayList<>();
+  private List<Object> categories = new ArrayList<>();
 
   /**
    * Return all questions.
@@ -41,7 +44,7 @@ public class P1 extends Lab01Data {
     for (String[] s: additionalCsvLines.subList(1, additionalCsvLines.size())) {
       // s[0] = ID, s[1] = challenge, s[2] = answer1, s[3] = answer2,s[4] = answer3, s[5] = answer4
       // s[6] = position of solution ==> set answer bool, s[7] = category
-      int ID = Integer.parseInt(s[0]);
+      int id = Integer.parseInt(s[0]);
       String challenge = s[1];
       String answer1 = s[2];
       String answer2 = s[3];
@@ -72,12 +75,12 @@ public class P1 extends Lab01Data {
       choices.add(a2);
       choices.add(a3);
       choices.add(a4);
-      Question q = new Question(ID, challenge, choices);
+      Question q = new Question(id, challenge, choices);
       questions.add(q);
 
       // create category or if exist add question to category
       Category c = checkCategoryExistence(category);
-      if(c != null) {
+      if (c != null) {
         c.getQuestionlist().add(q);
       } else {
         Category newCat = new Category(category, new ArrayList<>());
@@ -89,7 +92,7 @@ public class P1 extends Lab01Data {
 
   // checks if category already exists
   private Category checkCategoryExistence(String cat) {
-    if(categories != null) {
+    if (categories != null) {
       for (Object o : categories) {
         Category c = (Category) o;
         if (c.getName().equals(cat)) {

@@ -2,27 +2,30 @@ package de.hda.fbi.db2.stud.entity;
 
 import java.util.ArrayList;
 
+/**
+ * Question class
+ */
 public class Question {
 
-  private int ID;
+  private int id;
   private String challenge;
   private ArrayList<Answer> choices;
 
   public Question() {
   }
 
-  public Question(int ID, String challenge, ArrayList<Answer> choices) {
-    this.ID = ID;
+  public Question(int id, String challenge, ArrayList<Answer> choices) {
+    this.id = id;
     this.challenge = challenge;
     this.choices = choices;
   }
 
   public int getID() {
-    return ID;
+    return id;
   }
 
-  public void setID(int ID) {
-    this.ID = ID;
+  public void setID(int id) {
+    this.id = id;
   }
 
   public String getChallenge() {

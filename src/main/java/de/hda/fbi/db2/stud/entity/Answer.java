@@ -1,5 +1,8 @@
 package de.hda.fbi.db2.stud.entity;
 
+/**
+ * Answer class
+ */
 public class Answer {
   private String choice;
   private boolean isCorrect;
