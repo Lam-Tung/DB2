@@ -5,14 +5,16 @@ import de.hda.fbi.db2.stud.entity.Answer;
 import de.hda.fbi.db2.stud.entity.Category;
 import de.hda.fbi.db2.stud.entity.Question;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * P1 class is an implementation of the Lab01Data.java
+ * P1 class is an implementation of the Lab01Data.java.
  */
 public class P1 extends Lab01Data {
   private List<Object> questions = new ArrayList<>();
-  private List<Object> categories = new ArrayList<>();
+  private HashMap<String, Object> categories = new HashMap<String, Object>();
 
   /**
    * Return all questions.
@@ -31,7 +33,15 @@ public class P1 extends Lab01Data {
    */
   @Override
   public List<Object> getCategories() {
-    return categories;
+    ArrayList<Object> cats = new ArrayList<>();
+    Iterator it = categories.entrySet().iterator();
+    while (it.hasNext()) {
+      HashMap.Entry pair = (HashMap.Entry)it.next();
+      Category c = (Category) pair.getValue();
+      cats.add(c);
+    }
+
+    return cats;
   }
 
   /**
@@ -83,23 +93,38 @@ public class P1 extends Lab01Data {
       if (c != null) {
         c.getQuestionlist().add(q);
       } else {
-        Category newCat = new Category(category, new ArrayList<>());
+        Category newCat = new Category(category);
         newCat.getQuestionlist().add(q);
-        categories.add(newCat);
+        categories.put(category, newCat);   //put instead of add + added key
       }
+    }
+
+    // print Questions
+    printMap(categories);
+  }
+
+  /**
+   * checks if category already exists
+   * @param cat the String to find a belonging category
+   * @return the category or null
+   */
+  private Category checkCategoryExistence(String cat) {
+    if (categories.containsKey(cat)) {
+      return (Category) categories.get(cat);  //is cast save?
+    } else {
+      return null;
     }
   }
 
-  // checks if category already exists
-  private Category checkCategoryExistence(String cat) {
-    if (categories != null) {
-      for (Object o : categories) {
-        Category c = (Category) o;
-        if (c.getName().equals(cat)) {
-          return c;
-        }
-      }
+  /**
+   * @param map the map to be printed
+   */
+  private void printMap(HashMap map) {
+    Iterator it = map.entrySet().iterator();
+    while (it.hasNext()) {
+      HashMap.Entry pair = (HashMap.Entry)it.next();
+      Category c = (Category) pair.getValue();
+      c.printQuestions();
     }
-      return null;
   }
 }

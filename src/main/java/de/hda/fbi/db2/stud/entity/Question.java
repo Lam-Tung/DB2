@@ -3,7 +3,7 @@ package de.hda.fbi.db2.stud.entity;
 import java.util.ArrayList;
 
 /**
- * Question class
+ * Question class.
  */
 public class Question {
 
