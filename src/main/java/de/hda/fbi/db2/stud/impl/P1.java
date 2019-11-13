@@ -1,20 +1,19 @@
 package de.hda.fbi.db2.stud.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import de.hda.fbi.db2.api.Lab01Data;
 import de.hda.fbi.db2.stud.entity.Answer;
 import de.hda.fbi.db2.stud.entity.Category;
 import de.hda.fbi.db2.stud.entity.Question;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * P1 class is an implementation of the Lab01Data.java.
  */
 public class P1 extends Lab01Data {
   private List<Object> questions = new ArrayList<>();
-  private HashMap<String, Object> categories = new HashMap<String, Object>();
+  private HashMap<String, Object> categories = new HashMap<>();
 
   /**
    * Return all questions.
@@ -34,10 +33,8 @@ public class P1 extends Lab01Data {
   @Override
   public List<Object> getCategories() {
     ArrayList<Object> cats = new ArrayList<>();
-    Iterator it = categories.entrySet().iterator();
-    while (it.hasNext()) {
-      HashMap.Entry pair = (HashMap.Entry) it.next();
-      Category c = (Category) pair.getValue();
+    for (java.util.Map.Entry<String, Object> stringObjectEntry : categories.entrySet()) {
+      Category c = (Category) stringObjectEntry.getValue();
       cats.add(c);
     }
 
@@ -120,9 +117,8 @@ public class P1 extends Lab01Data {
    * @param map the map to be printed
    */
   private void printMap(HashMap map) {
-    Iterator it = map.entrySet().iterator();
-    while (it.hasNext()) {
-      HashMap.Entry pair = (HashMap.Entry) it.next();
+    for (Object o : map.entrySet()) {
+      HashMap.Entry pair = (HashMap.Entry) o;
       Category c = (Category) pair.getValue();
       c.printQuestions();
     }
