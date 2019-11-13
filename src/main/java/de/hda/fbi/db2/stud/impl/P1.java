@@ -36,7 +36,7 @@ public class P1 extends Lab01Data {
     ArrayList<Object> cats = new ArrayList<>();
     Iterator it = categories.entrySet().iterator();
     while (it.hasNext()) {
-      HashMap.Entry pair = (HashMap.Entry)it.next();
+      HashMap.Entry pair = (HashMap.Entry) it.next();
       Category c = (Category) pair.getValue();
       cats.add(c);
     }
@@ -104,7 +104,7 @@ public class P1 extends Lab01Data {
   }
 
   /**
-   * checks if category already exists
+   * checks if category already exists.
    * @param cat the String to find a belonging category
    * @return the category or null
    */
@@ -122,7 +122,7 @@ public class P1 extends Lab01Data {
   private void printMap(HashMap map) {
     Iterator it = map.entrySet().iterator();
     while (it.hasNext()) {
-      HashMap.Entry pair = (HashMap.Entry)it.next();
+      HashMap.Entry pair = (HashMap.Entry) it.next();
       Category c = (Category) pair.getValue();
       c.printQuestions();
     }
