@@ -97,7 +97,7 @@ public class P1 extends Lab01Data {
     }
 
     // print Questions
-    printMap(categories);
+    //printMap(categories);
   }
 
   /**

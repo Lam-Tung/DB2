@@ -6,14 +6,15 @@
     <persistence-unit name="postgresPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <!-- put your entity-classes here -->
-
-
+        <class>de.hda.fbi.db2.stud.entity.Category</class>
+        <class>de.hda.fbi.db2.stud.entity.Question</class>
+        <class>de.hda.fbi.db2.stud.entity.Answer</class>
         <!-- this must be provided -->
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost/test" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql:141.100.70.93/stlatruo" />
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
-            <property name="javax.persistence.jdbc.user" value="dbadmin" />
-            <property name="javax.persistence.jdbc.password" value="dbadminpassword" />
+            <property name="javax.persistence.jdbc.user" value="db2p2user" />
+            <property name="javax.persistence.jdbc.password" value="password:)" />
 
             <!--<property name="javax.persistence.schema-generation.database.action" value="none"/>-->
             <!--<property name="javax.persistence.schema-generation.database.action" value="create"/>-->

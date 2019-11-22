@@ -1,8 +1,14 @@
 package de.hda.fbi.db2.stud.entity;
 
+import javax.persistence.Embeddable;
+import javax.persistence.Table;
+import java.util.Objects;
+
 /**
  * Answer class.
  */
+@Embeddable
+@Table(name = "Answer", schema = "db2p2")
 public class Answer {
   private String choice;
   private boolean isCorrect;
@@ -22,11 +28,30 @@ public class Answer {
     this.choice = choice;
   }
 
-  public boolean isCorrect() {
+  public boolean getIsCorrect() {
     return isCorrect;
   }
 
   public void setCorrect(boolean correct) {
     isCorrect = correct;
+  }
+
+  // Equals & hashCode
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Answer)) {
+      return false;
+    }
+    Answer that = (Answer) o;
+    return Objects.equals(getChoice(), that.getChoice()) &&
+            Objects.equals(getIsCorrect(), that.getIsCorrect());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(getChoice(), getIsCorrect());
   }
 }
