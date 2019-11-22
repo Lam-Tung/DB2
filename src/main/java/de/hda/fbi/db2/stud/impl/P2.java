@@ -14,17 +14,17 @@ import java.util.List;
  * P2 class is an implementation of the Lab02EntityManager.java.
  */
 public class P2 extends Lab02EntityManager {
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-
     /**
      * There you have to persist the data in the database.
      */
     @Override
     public void persistData() {
-        getEntityManager();
-        //List<> ql =
+        EntityManager em = getEntityManager();
+        List<Object> ql = lab01Data.getQuestions();
 
+        for (Object o : ql) {
+            em.persist(o);
+        }
     }
 
     /**
@@ -34,8 +34,8 @@ public class P2 extends Lab02EntityManager {
      */
     @Override
     public EntityManager getEntityManager() {
-        emf = Persistence.createEntityManagerFactory("postgresPU");
-        em = emf.createEntityManager();
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("postgresPU");
+        EntityManager em = emf.createEntityManager();
 
         return em;
     }

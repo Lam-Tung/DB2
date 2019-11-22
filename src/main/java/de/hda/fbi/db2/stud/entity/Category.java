@@ -47,7 +47,7 @@ public class Category {
     this.name = name;
   }
 
-  @OneToMany(mappedBy = "cat")
+  @OneToMany(mappedBy = "cat", cascade = {CascadeType.PERSIST})
   public ArrayList<Question> getQuestionlist() {
     return questionlist;
   }
