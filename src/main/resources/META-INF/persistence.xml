@@ -11,7 +11,7 @@
         <class>de.hda.fbi.db2.stud.entity.Answer</class>
         <!-- this must be provided -->
         <properties>
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql:141.100.70.93/stlatruo" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://141.100.70.93/stlatruo" />
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver" />
             <property name="javax.persistence.jdbc.user" value="db2p2user" />
             <property name="javax.persistence.jdbc.password" value="password:)" />
