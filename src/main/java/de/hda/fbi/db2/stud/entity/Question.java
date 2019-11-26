@@ -13,10 +13,9 @@ import java.util.ArrayList;
 public class Question {
   @Id
   private int qid;
-
   private String challenge;
-
   @ElementCollection
+  @CollectionTable(name = "CHOICE")
   private List<Answer> choices;
 
   @ManyToOne(cascade = CascadeType.PERSIST)
