@@ -12,10 +12,15 @@ import java.util.ArrayList;
 @Table(name = "question", schema = "db2p2")
 public class Question {
   @Id
+  @Column(name = "QuestionID")
   private int qid;
   private String challenge;
   @ElementCollection
-  @CollectionTable(name = "CHOICE")
+  @CollectionTable(
+          name = "Answers",
+          schema = "db2p2",
+          joinColumns = @JoinColumn(name = "QuestionID")
+  )
   private List<Answer> choices;
 
   @ManyToOne(cascade = CascadeType.PERSIST)
