@@ -14,9 +14,7 @@ public class Question {
   @Id
   @Column(name = "QuestionID")
   private int qid;
-
   private String challenge;
-
   @ElementCollection
   @CollectionTable(
           name = "Answers",
