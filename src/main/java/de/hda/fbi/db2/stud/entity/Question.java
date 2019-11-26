@@ -1,38 +1,41 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * Question class.
  */
 @Entity
-@Table(name = "Question", schema = "db2p2")
+@Table(name = "question", schema = "db2p2")
 public class Question {
   @Id
-  private int did;
+  private int qid;
+
   private String challenge;
+
   @ElementCollection
-  private ArrayList<Answer> choices;
-  @ManyToOne
+  private List<Answer> choices;
+
+  @ManyToOne(cascade = CascadeType.PERSIST)
   private Category cat;
 
-  public Question() {
-  }
+  public Question() {}
 
-  public Question(int did, String challenge, ArrayList<Answer> choices) {
-    this.did = did;
+  public Question(int qid, String challenge, ArrayList<Answer> choices) {
+    this.qid = qid;
     this.challenge = challenge;
     this.choices = choices;
   }
 
   public int getID() {
-    return did;
+    return qid;
   }
 
   public void setID(int id) {
-    this.did = id;
+    this.qid = id;
   }
 
   public String getChallenge() {
@@ -43,7 +46,7 @@ public class Question {
     this.challenge = challenge;
   }
 
-  public ArrayList<Answer> getChoices() {
+  public List<Answer> getChoices() {
     return choices;
   }
 

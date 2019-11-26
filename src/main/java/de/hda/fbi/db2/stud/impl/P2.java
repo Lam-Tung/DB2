@@ -6,8 +6,9 @@ import de.hda.fbi.db2.stud.entity.Question;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,11 +21,45 @@ public class P2 extends Lab02EntityManager {
     @Override
     public void persistData() {
         EntityManager em = getEntityManager();
-        List<Object> ql = lab01Data.getQuestions();
+        EntityTransaction tx = null;
+        List<Object> oql = lab01Data.getQuestions();
+        List<Object> ocl = lab01Data.getCategories();
 
-        for (Object o : ql) {
-            em.persist(o);
+        // persist questions
+        for (Object oquest : oql) {
+            try {
+                tx = em.getTransaction();
+                tx.begin();
+                Question q = (Question) oquest;
+                Category c = findQuestionCategory(q);
+                q.setCat(c); // set category for FK relation
+                em.persist(q);
+                tx.commit();
+            } catch (RuntimeException e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                throw e;
+            }
         }
+
+        // persist categories
+        for (Object ocat : ocl) {
+            try {
+                tx = em.getTransaction();
+                tx.begin();
+                Category c = (Category) ocat;
+                em.persist(c);
+                tx.commit();
+            } catch (RuntimeException e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                throw e;
+            }
+        }
+
+        em.close();
     }
 
     /**
@@ -38,5 +73,29 @@ public class P2 extends Lab02EntityManager {
         EntityManager em = emf.createEntityManager();
 
         return em;
+    }
+
+    private List<Category> convertToCategoryList (List<Object> objectList) {
+        List<Category> categoryList = new ArrayList<>();
+        for (Object o: objectList) {
+            Category c = (Category) o;
+            categoryList.add(c);
+        }
+
+        return categoryList;
+    }
+
+    private Category findQuestionCategory (Question q) {
+        List<Object> ocl = lab01Data.getCategories();
+        List<Category> cl = convertToCategoryList(ocl);
+        Category result;
+        for (Category c : cl) {
+            if (c.getQuestionlist().contains(q)) {
+                result = c;
+                return result;
+            }
+        }
+
+        return null;
     }
 }

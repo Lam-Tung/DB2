@@ -1,21 +1,26 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * Category class.
  */
 @Entity
-@Table(name = "Category", schema = "db2p2")
+@Table(name = "category", schema = "db2p2")
 public class Category {
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_gen_category")
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "CID")
   private int cid;
+
   @Column(unique = true)
   private String name;
-  private ArrayList<Question> questionlist;
+
+  @OneToMany(mappedBy = "cat", cascade = CascadeType.PERSIST)
+  private List<Question> questionlist;
 
   public Category(){}
 
@@ -23,7 +28,6 @@ public class Category {
     this.name = name;
     this.questionlist = new ArrayList<>();
   }
-
 
   /**
    * Print all questions with answers.
@@ -47,8 +51,7 @@ public class Category {
     this.name = name;
   }
 
-  @OneToMany(mappedBy = "cat", cascade = {CascadeType.PERSIST})
-  public ArrayList<Question> getQuestionlist() {
+  public List<Question> getQuestionlist() {
     return questionlist;
   }
 
@@ -58,6 +61,10 @@ public class Category {
 
   public int getCid() {
     return cid;
+  }
+
+  public void setQuestionlist(List<Question> questionlist) {
+    this.questionlist = questionlist;
   }
 
   // Equals & hashCode

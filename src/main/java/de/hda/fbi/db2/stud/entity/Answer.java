@@ -1,14 +1,13 @@
 package de.hda.fbi.db2.stud.entity;
 
-import javax.persistence.Embeddable;
-import javax.persistence.Table;
 import java.util.Objects;
+import javax.persistence.Embeddable;
+
 
 /**
  * Answer class.
  */
 @Embeddable
-@Table(name = "Answer", schema = "db2p2")
 public class Answer {
   private String choice;
   private boolean isCorrect;
