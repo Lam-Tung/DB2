@@ -14,7 +14,7 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int gid;
 
-    @OneToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Player player;
 
     @Temporal(TemporalType.DATE)
