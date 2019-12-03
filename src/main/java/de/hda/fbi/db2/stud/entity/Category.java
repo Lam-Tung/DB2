@@ -19,6 +19,9 @@ public class Category {
   @Column(unique = true)
   private String name;
 
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Game gameCat;
+
   @OneToMany(mappedBy = "cat", cascade = CascadeType.PERSIST)
   private List<Question> questionlist;
 

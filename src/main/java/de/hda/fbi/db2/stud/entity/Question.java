@@ -26,6 +26,9 @@ public class Question {
   @ManyToOne(cascade = CascadeType.PERSIST)
   private Category cat;
 
+  @ManyToOne(cascade = CascadeType.PERSIST)
+  private Game gameQuest;
+
   public Question() {}
 
   public Question(int qid, String challenge, ArrayList<Answer> choices) {
