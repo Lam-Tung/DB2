@@ -37,7 +37,7 @@ public class Game {
     public Game (Player player, List<Object> questionList) {
         this.player = player;
         List<Question> ql = new ArrayList<>();
-        for(Object o : questionList) {
+        for (Object o : questionList) {
             Question q = (Question) o;
             ql.add(q);
         }

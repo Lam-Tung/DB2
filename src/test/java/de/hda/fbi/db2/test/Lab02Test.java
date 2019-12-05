@@ -9,6 +9,7 @@ import javax.persistence.metamodel.Type;
 import de.hda.fbi.db2.controller.Controller;
 import org.eclipse.persistence.internal.jpa.metamodel.AttributeImpl;
 import org.eclipse.persistence.internal.jpa.metamodel.EntityTypeImpl;
+import org.eclipse.persistence.mappings.AggregateCollectionMapping;
 import org.eclipse.persistence.mappings.DatabaseMapping;
 import org.eclipse.persistence.mappings.DirectMapMapping;
 import org.eclipse.persistence.mappings.OneToManyMapping;
@@ -144,6 +145,9 @@ public class Lab02Test {
       if (mapping instanceof DirectMapMapping) {
         return;
       } else if (mapping instanceof OneToManyMapping) {
+        return;
+      }
+      if (mapping instanceof AggregateCollectionMapping) {
         return;
       }
     }
