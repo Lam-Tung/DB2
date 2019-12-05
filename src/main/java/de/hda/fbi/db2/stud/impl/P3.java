@@ -112,9 +112,9 @@ public class P3 extends Lab03Game {
         Game g = (Game) game;
         int rightAnswers = 0;
 
-        Map<Question, Answer> questionsPlayed = g.getQuestionsPlayed();
-        for (java.util.Map.Entry<Question, Answer> questionAnswerEntry : questionsPlayed.entrySet()) {
-            if(questionAnswerEntry.getValue().getIsCorrect()) {
+        Map<Question, Boolean> questionsPlayed = g.getQuestionsPlayed();
+        for (java.util.Map.Entry<Question, Boolean> questionAnswerEntry : questionsPlayed.entrySet()) {
+            if(questionAnswerEntry.getValue()) {
                 rightAnswers++;
             }
         }

@@ -29,7 +29,7 @@ public class Game {
     @OneToMany(mappedBy = "gameQuest", cascade = CascadeType.PERSIST)
     private List<Question> questionList;
 
-    private Map<Question, Answer> questionsPlayed;
+    private Map<Question, Boolean> questionsPlayed;
 
     public Game () {
     };
@@ -92,11 +92,11 @@ public class Game {
         this.questionList = questionList;
     }
 
-    public Map<Question, Answer> getQuestionsPlayed() {
+    public Map<Question, Boolean> getQuestionsPlayed() {
         return questionsPlayed;
     }
 
-    public void setQuestionsPlayed(Map<Question, Answer> questionsPlayed) {
+    public void setQuestionsPlayed(Map<Question, Boolean> questionsPlayed) {
         this.questionsPlayed = questionsPlayed;
     }
 
