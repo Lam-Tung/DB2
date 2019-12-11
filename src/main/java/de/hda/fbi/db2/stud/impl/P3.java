@@ -29,6 +29,7 @@ public class P3 extends Lab03Game {
         EntityTransaction tx = null;
         List<Question> questionList = new ArrayList<>();
         List<Category> categoryList = new ArrayList<>();
+        Map<Question, Boolean> questionsPlayed = new HashMap<>();
         Scanner in = new Scanner(System.in);
         Game newGame = new Game();
 
@@ -57,12 +58,14 @@ public class P3 extends Lab03Game {
         categoryList.add(current);
         System.out.println(current.getName() + " added");
 
-        System.out.println("Add another category? (y / n)");
-        String addAnother = in.nextLine();
+        System.out.println("Add another category?");
+        System.out.println("1: yes");
+        System.out.println("2: no");
+        int addAnother = in.nextInt();
 
         boolean addCategory;
 
-        if(addAnother.equals("y")) {
+        if(addAnother == 1) {
             addCategory = true;
         } else {
             addCategory = false;
@@ -74,10 +77,12 @@ public class P3 extends Lab03Game {
             current = findCategory(cat);
             categoryList.add(current);
             System.out.println(current.getName() + " added");
-            System.out.println("Add another category? (y / n)");
-            addAnother = in.nextLine();
+            System.out.println("Add another category?");
+            System.out.println("1: yes");
+            System.out.println("2: no");
+            addAnother = in.nextInt();
 
-            if(addAnother.equals("n")) {
+            if(addAnother == 2) {
                 addCategory = false;
             }
         }
@@ -100,26 +105,12 @@ public class P3 extends Lab03Game {
             for (int i = 0; i < amtQuestions; i++) {
                 questionList.add(shuffledQuestionsFromCategory.get(i));
             }
-
-            //c.setGameCat(newGame); // for persist
         }
 
         newGame.setPlayer(dbplayer);
         newGame.setCatSelected(categoryList);
         newGame.setQuestionList(questionList);
-
-        // persist game
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            em.persist(newGame);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
+        newGame.setQuestionsPlayed(questionsPlayed);
 
         return newGame;
     }
@@ -134,9 +125,6 @@ public class P3 extends Lab03Game {
         Game currentGame = (Game) game;
         Scanner in = new Scanner(System.in);
         EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
-
-        em.detach(currentGame);
 
         // set start timestamp
         Date currentDate = new Date();
@@ -146,40 +134,31 @@ public class P3 extends Lab03Game {
         // play the questions
         for (Question q : currentGame.getQuestionList()) {
             System.out.println(q.getChallenge());
-            System.out.println("(1) " + q.getChoices().get(0));
-            System.out.println("(2) " + q.getChoices().get(1));
-            System.out.println("(3) " + q.getChoices().get(2));
-            System.out.println("(4) " + q.getChoices().get(3));
+            System.out.println("(1) " + q.getChoices().get(0).getChoice());
+            System.out.println("(2) " + q.getChoices().get(1).getChoice());
+            System.out.println("(3) " + q.getChoices().get(2).getChoice());
+            System.out.println("(4) " + q.getChoices().get(3).getChoice());
             System.out.println("Your answer: ");
             int playerChoice = in.nextInt();
 
-            if (q.getChoices().get(playerChoice).getIsCorrect()) {
+            if (q.getChoices().get(playerChoice-1).getIsCorrect()) {
                 System.out.println("Correct! Good job!");
             } else {
                 System.out.println("Wrong answer! Correct answer is: " + q.getCorrectChoice().getChoice());
             }
 
             // add to QuestionsPlayed with the player choices
-            currentGame.getQuestionsPlayed().put(q, q.getChoices().get(playerChoice).getIsCorrect());
+            currentGame.getQuestionsPlayed().put(q, q.getChoices().get(playerChoice-1).getIsCorrect());
         }
         // set end timestamp
         currentDate = new Date();
         currentTime = currentDate.getTime();
         currentTs = new Timestamp(currentTime);
         currentGame.settEnd(currentTs);
-        Game g = em.merge(currentGame);
+
         // persist game
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            em.persist(g);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
+        persistGame(currentGame);
+
         // show stats
         System.out.println("Questions played: " + currentGame.getQuestionsPlayed().size());
         System.out.println("Correct Answers: " + getRightAnswers(currentGame));
@@ -199,11 +178,7 @@ public class P3 extends Lab03Game {
     @Override
     public Object createGame(String playerName, List<Object> questions) {
         Game game = new Game((Player) getPlayer(playerName), questions);
-        EntityManager em = lab02EntityManager.getEntityManager();
 
-        for (Question q : game.getQuestionList()) {
-            Category c = q.getCat();
-        }
         return game;
     }
 
