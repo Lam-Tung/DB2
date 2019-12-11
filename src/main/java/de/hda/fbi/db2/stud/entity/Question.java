@@ -12,12 +12,12 @@ import java.util.ArrayList;
 @Table(name = "question", schema = "db2p2")
 public class Question {
   @Id
-  @Column(name = "QuestionID")
+  @Column(name = "questionid")
   private int qid;
   private String challenge;
   @ElementCollection
   @CollectionTable(
-          name = "Answers",
+          name = "answers",
           schema = "db2p2",
           joinColumns = @JoinColumn(name = "QuestionID")
   )
@@ -67,6 +67,15 @@ public class Question {
 
   public void setCat(Category cat) {
     this.cat = cat;
+  }
+
+  public Answer getCorrectChoice() {
+    for (Answer a : getChoices()) {
+      if (a.getIsCorrect()) {
+        return a;
+      }
+    }
+    return null;
   }
 
   // Equals & hashCode

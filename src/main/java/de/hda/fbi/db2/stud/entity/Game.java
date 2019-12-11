@@ -1,5 +1,7 @@
 package de.hda.fbi.db2.stud.entity;
 
+import de.hda.fbi.db2.stud.impl.P3;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -42,6 +44,12 @@ public class Game {
             ql.add(q);
         }
         this.questionList = ql;
+    }
+
+    public Game (Player player, List<Category> catSelected, List<Question> questionList) {
+        this.player = player;
+        this.catSelected = catSelected;
+        this.questionList = questionList;
     }
 
     public int getGid() {

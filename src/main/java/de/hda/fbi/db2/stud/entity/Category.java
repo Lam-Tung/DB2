@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class Category {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "CID")
+  @Column(name = "cid")
   private int cid;
 
   @Column(unique = true)
@@ -68,6 +68,14 @@ public class Category {
 
   public void setQuestionlist(List<Question> questionlist) {
     this.questionlist = questionlist;
+  }
+
+  public Game getGameCat() {
+    return gameCat;
+  }
+
+  public void setGameCat(Game gameCat) {
+    this.gameCat = gameCat;
   }
 
   // Equals & hashCode
