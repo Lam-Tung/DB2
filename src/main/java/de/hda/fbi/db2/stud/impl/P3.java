@@ -60,10 +60,12 @@ public class P3 extends Lab03Game {
         System.out.println("Add another category? (y / n)");
         String addAnother = in.nextLine();
 
-        boolean addCategory = false;
+        boolean addCategory;
 
         if(addAnother.equals("y")) {
             addCategory = true;
+        } else {
+            addCategory = false;
         }
 
         while (addCategory) {
@@ -312,10 +314,7 @@ public class P3 extends Lab03Game {
     private void printCategories() {
         List<Category> categoryList = convertToCategoryList(lab01Data.getCategories());
         for (int i = 0; i < categoryList.size(); i++) {
-            System.out.print(categoryList.get(i).getCid() + ". " + categoryList.get(i).getName() + "   ");
-            if (i % 6 == 0) {
-                System.out.println();
-            }
+            System.out.println(categoryList.get(i).getCid() + ". " + categoryList.get(i).getName() + "   ");
         }
     }
 

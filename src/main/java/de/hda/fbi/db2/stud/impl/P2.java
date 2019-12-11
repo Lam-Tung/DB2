@@ -6,6 +6,7 @@ import de.hda.fbi.db2.stud.entity.Question;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +21,37 @@ public class P2 extends Lab02EntityManager {
     @Override
     public void persistData() {
         EntityManager em = getEntityManager();
+        EntityTransaction tx = null;
         List<Object> oql = lab01Data.getQuestions();
         List<Object> ocl = lab01Data.getCategories();
 
-        // persist questions
+        // set category for FK relation
         for (Object oquest : oql) {
             Question q = (Question) oquest;
             Category c = findQuestionCategory(q);
-            q.setCat(c); // set category for FK relation
-            em.persist(q);
+            q.setCat(c);
         }
 
         // persist categories
         for (Object ocat : ocl) {
-            Category c = (Category) ocat;
-            em.persist(c);
+            try {
+                tx = em.getTransaction();
+                tx.begin();
+                Category c = (Category) ocat;
+                if(em.find(Category.class, c.getCid()) == null) {
+                    em.persist(c);
+                }
+                tx.commit();
+            } catch (RuntimeException e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                throw e;
+            }
         }
 
         em.close();
+
     }
 
     /**

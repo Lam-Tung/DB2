@@ -23,7 +23,7 @@ public class Game {
     @Temporal(TemporalType.DATE)
     private Date tEnd;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Category> catSelected;
 
     @OneToMany(mappedBy = "gameQuest", cascade = CascadeType.PERSIST)
