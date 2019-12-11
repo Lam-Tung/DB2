@@ -198,25 +198,10 @@ public class P3 extends Lab03Game {
     public Object createGame(String playerName, List<Object> questions) {
         Game game = new Game((Player) getPlayer(playerName), questions);
         EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
 
         for (Question q : game.getQuestionList()) {
             Category c = q.getCat();
-            //c.setGameCat(game);
         }
-        // persist game
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            em.persist(game);
-            tx.commit();
-        } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
-
         return game;
     }
 
@@ -261,7 +246,6 @@ public class P3 extends Lab03Game {
     @Override
     public Object getPlayer(String name) {
         EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
 
         Player result = null;
         try {
@@ -302,21 +286,7 @@ public class P3 extends Lab03Game {
     @Override
     public void persistGame(Object game) {
         EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
-
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            Game g = (Game) game;
-            //TODO g.settEnd(); // set tEnd
-            em.persist(g);
-            tx.commit();
-        } catch (RuntimeException e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
+        em.persist(game);
     }
 
     private List<Category> convertToCategoryList (List<Object> objectList) {

@@ -20,7 +20,7 @@ public class Category {
   private String name;
 
 
-  @ManyToMany(cascade = CascadeType.PERSIST)
+  @OneToMany(cascade = CascadeType.PERSIST)
   private List<Question> questionlist;
 
   public Category(){}
