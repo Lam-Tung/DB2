@@ -99,7 +99,7 @@ public class P3 extends Lab03Game {
                 questionList.add(shuffledQuestionsFromCategory.get(i));
             }
 
-            c.setGameCat(newGame); // for persist
+            //c.setGameCat(newGame); // for persist
         }
 
         newGame.setPlayer(dbplayer);
@@ -202,7 +202,7 @@ public class P3 extends Lab03Game {
 
         for (Question q : game.getQuestionList()) {
             Category c = q.getCat();
-            c.setGameCat(game);
+            //c.setGameCat(game);
         }
         // persist game
         try {
@@ -265,21 +265,9 @@ public class P3 extends Lab03Game {
 
         Player result = null;
         try {
-            result = (Player) em.createQuery("select p from db2p2.player p where p.pName = '" + name + "'").getSingleResult();
+            result = (Player) em.createQuery("select p from Player p where p.pName = '" + name + "'").getSingleResult();
         } catch (NoResultException nre) {
-            Player newPlayer = new Player(name);
-            try {
-                tx = em.getTransaction();
-                tx.begin();
-                em.persist(newPlayer);
-                tx.commit();
-                result = newPlayer;
-            } catch (RuntimeException e) {
-                if (tx != null && tx.isActive()) {
-                    tx.rollback();
-                }
-                throw e;
-            }
+            return new Player(name);
         }
 
         return result;

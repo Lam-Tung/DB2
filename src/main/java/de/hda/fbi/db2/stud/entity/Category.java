@@ -1,9 +1,9 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.ArrayList;
 
 /**
  * Category class.
@@ -19,10 +19,8 @@ public class Category {
   @Column(unique = true)
   private String name;
 
-  @ManyToOne(cascade = CascadeType.PERSIST)
-  private Game gameCat;
 
-  @OneToMany(mappedBy = "cat", cascade = CascadeType.PERSIST)
+  @ManyToMany(cascade = CascadeType.PERSIST)
   private List<Question> questionlist;
 
   public Category(){}
@@ -68,14 +66,6 @@ public class Category {
 
   public void setQuestionlist(List<Question> questionlist) {
     this.questionlist = questionlist;
-  }
-
-  public Game getGameCat() {
-    return gameCat;
-  }
-
-  public void setGameCat(Game gameCat) {
-    this.gameCat = gameCat;
   }
 
   // Equals & hashCode

@@ -1,7 +1,5 @@
 package de.hda.fbi.db2.stud.entity;
 
-import de.hda.fbi.db2.stud.impl.P3;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -25,7 +23,7 @@ public class Game {
     @Temporal(TemporalType.DATE)
     private Date tEnd;
 
-    @OneToMany(mappedBy = "gameCat", cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Category> catSelected;
 
     @OneToMany(mappedBy = "gameQuest", cascade = CascadeType.PERSIST)
