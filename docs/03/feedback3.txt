@@ -1,0 +1,12 @@
+Bitte beheben Sie die folgende(s) Problem(e) bis spätestens Montag 16.12.19 23:55, andernfalls verlieren Sie Ihren Praktikumsplatz:
+
+- javax.persistence.schema-generation.database.action ist NICHT auf none gestellt!
+	-> Bitte ändern Sie dies und stellen Sie sicher, dass sich die Anwendung noch wie gefordert verhält.
+
+- wenn vor dem Spielstart "re-read csv" ausgeführt wird, werden Fragen z.T. doppelt innerhalb eines Spieles gestellt
+
+- Ihre Daten werden nicht (vollständig) in der Datenbank persistiert!
+	-> Nach den Testspielen waren weder Spieler, noch Spiele im DB-Schema "db2p2" eingepflegt.
+
+Bitte beheben Sie die Probleme und stellen Sie sicher, dass Ihr Spiel
+gemäß den Abnahmekriterien spielbar ist und datenbankseitig persistiert wird.
