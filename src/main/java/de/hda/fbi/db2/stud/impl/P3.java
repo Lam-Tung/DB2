@@ -3,6 +3,7 @@ package de.hda.fbi.db2.stud.impl;
 import de.hda.fbi.db2.api.Lab03Game;
 import de.hda.fbi.db2.stud.entity.*;
 
+import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -28,7 +29,7 @@ public class P3 extends Lab03Game {
         EntityManager em = lab02EntityManager.getEntityManager();
         EntityTransaction tx = null;
         List<Question> questionList = new ArrayList<>();
-        List<Category> categoryList = new ArrayList<>();
+        List<Category> catSelected = new ArrayList<>();
         Map<Question, Boolean> questionsPlayed = new HashMap<>();
         Scanner in = new Scanner(System.in);
         Game newGame = new Game();
@@ -49,13 +50,13 @@ public class P3 extends Lab03Game {
         System.out.println("Choose first category (of at least 2): ");
         int cat = in.nextInt();
         Category current = findCategory(cat);
-        categoryList.add(current);
+        catSelected.add(current);
         System.out.println(current.getName() + " added");
 
         System.out.println("Choose second category: ");
         cat = in.nextInt();
         current = findCategory(cat);
-        categoryList.add(current);
+        catSelected.add(current);
         System.out.println(current.getName() + " added");
 
         System.out.println("Add another category?");
@@ -75,7 +76,7 @@ public class P3 extends Lab03Game {
             System.out.println("Choose another category:");
             cat = in.nextInt();
             current = findCategory(cat);
-            categoryList.add(current);
+            catSelected.add(current);
             System.out.println(current.getName() + " added");
             System.out.println("Add another category?");
             System.out.println("1: yes");
@@ -91,7 +92,7 @@ public class P3 extends Lab03Game {
         int maxQuestionsPerCategory = in.nextInt();
 
         // generate questionList
-        for (Category c : categoryList) {
+        for (Category c : catSelected) {
             List<Question> shuffledQuestionsFromCategory = c.getQuestionlist();
             Collections.shuffle(shuffledQuestionsFromCategory);
             int amtQuestions;
@@ -106,9 +107,10 @@ public class P3 extends Lab03Game {
                 questionList.add(shuffledQuestionsFromCategory.get(i));
             }
         }
+        Collections.shuffle(questionList);
 
         newGame.setPlayer(dbplayer);
-        newGame.setCatSelected(categoryList);
+        newGame.setCatSelected(catSelected);
         newGame.setQuestionList(questionList);
         newGame.setQuestionsPlayed(questionsPlayed);
 
@@ -158,6 +160,7 @@ public class P3 extends Lab03Game {
 
         // persist game
         persistGame(currentGame);
+        em.persist(currentGame.getPlayer());
 
         // show stats
         System.out.println("Questions played: " + currentGame.getQuestionsPlayed().size());
@@ -223,12 +226,26 @@ public class P3 extends Lab03Game {
     @Override
     public Object getPlayer(String name) {
         EntityManager em = lab02EntityManager.getEntityManager();
-
+        EntityTransaction tx = null;
         Player result = null;
         try {
             result = (Player) em.createQuery("select p from Player p where p.pName = '" + name + "'").getSingleResult();
         } catch (NoResultException nre) {
-            return new Player(name);
+            Player newPlayer = new Player(name);
+            try {
+                tx = em.getTransaction();
+                tx.begin();
+                em.persist(newPlayer);
+                tx.commit();
+            } catch (RuntimeException e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                throw e;
+            }
+            result = (Player) em.createQuery("select p from Player p where p.pName = '" + name + "'").getSingleResult();
+
+            return result;
         }
 
         return result;
@@ -287,16 +304,18 @@ public class P3 extends Lab03Game {
     }
 
     private void printCategories() {
-        List<Category> categoryList = convertToCategoryList(lab01Data.getCategories());
-        for (int i = 0; i < categoryList.size(); i++) {
-            System.out.println(categoryList.get(i).getCid() + ". " + categoryList.get(i).getName() + "   ");
+        EntityManager em = lab02EntityManager.getEntityManager();
+        List<Category> result = em.createQuery("select m from Category m ",Category.class).getResultList();
+        for (Category c : result) {
+            System.out.println(c.getCid() + ". " + c.getName());
         }
     }
 
     private Category findCategory(int catID) {
-        List<Category> categoryList = convertToCategoryList(lab01Data.getCategories());
+        EntityManager em = lab02EntityManager.getEntityManager();
+        List<Category> result = em.createQuery("select m from Category m ",Category.class).getResultList();
 
-        for (Category c: categoryList) {
+        for (Category c: result) {
             if (c.getCid() == catID) {
                 return c;
             }

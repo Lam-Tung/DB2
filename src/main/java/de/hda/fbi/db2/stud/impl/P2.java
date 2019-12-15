@@ -25,30 +25,36 @@ public class P2 extends Lab02EntityManager {
         List<Object> oql = lab01Data.getQuestions();
         List<Object> ocl = lab01Data.getCategories();
 
-        // set category for FK relation
-        for (Object oquest : oql) {
-            Question q = (Question) oquest;
-            Category c = findQuestionCategory(q);
-            q.setCat(c);
-        }
+        List<Category> result = em.createQuery("select m from Category m ",Category.class).getResultList();
+        if (result.isEmpty()) {
+            // set category for FK relation
+            for (Object oquest : oql) {
+                Question q = (Question) oquest;
+                Category c = findQuestionCategory(q);
+                q.setCat(c);
+            }
 
-        // persist categories
-        for (Object ocat : ocl) {
-            try {
-                tx = em.getTransaction();
-                tx.begin();
-                Category c = (Category) ocat;
-                if(em.find(Category.class, c.getCid()) == null) {
-                    em.persist(c);
+            // persist categories
+            for (Object ocat : ocl) {
+                try {
+                    tx = em.getTransaction();
+                    tx.begin();
+                    Category c = (Category) ocat;
+                    if(em.find(Category.class, c.getCid()) == null) {
+                        em.persist(c);
+                    }
+                    tx.commit();
+                } catch (RuntimeException e) {
+                    if (tx != null && tx.isActive()) {
+                        tx.rollback();
+                    }
+                    throw e;
                 }
-                tx.commit();
-            } catch (RuntimeException e) {
-                if (tx != null && tx.isActive()) {
-                    tx.rollback();
-                }
-                throw e;
             }
         }
+
+
+
 
         em.close();
 
