@@ -22,7 +22,7 @@ public class QuestionsPlayed implements Serializable {
     @ElementCollection
     @MapKeyColumn(name = "Question")
     @Column(name = "value")
-    @CollectionTable(name="Map", schema = "db2p2", joinColumns = @JoinColumn(name = "qpid"))
+    @CollectionTable(name = "Map", schema = "db2p2", joinColumns = @JoinColumn(name = "qpid"))
     private Map<Question, Boolean> questionsPlayed;
 
     public QuestionsPlayed() {}

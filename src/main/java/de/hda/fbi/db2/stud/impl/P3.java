@@ -64,7 +64,7 @@ public class P3 extends Lab03Game {
 
         boolean addCategory;
 
-        if(addAnother == 1) {
+        if (addAnother == 1) {
             addCategory = true;
         } else {
             addCategory = false;
@@ -81,7 +81,7 @@ public class P3 extends Lab03Game {
             System.out.println("2: no");
             addAnother = in.nextInt();
 
-            if(addAnother == 2) {
+            if (addAnother == 2) {
                 addCategory = false;
             }
         }
@@ -146,14 +146,15 @@ public class P3 extends Lab03Game {
             System.out.println("Your answer: ");
             int playerChoice = in.nextInt();
 
-            if (q.getChoices().get(playerChoice-1).getIsCorrect()) {
+            if (q.getChoices().get(playerChoice - 1).getIsCorrect()) {
                 System.out.println("Correct! Good job!");
             } else {
-                System.out.println("Wrong answer! Correct answer is: " + q.getCorrectChoice().getChoice());
+                System.out.println("Wrong answer! Correct answer is: "
+                        + q.getCorrectChoice().getChoice());
             }
 
             // add to QuestionsPlayed
-            boolean isCorrect = q.getChoices().get(playerChoice-1).getIsCorrect();
+            boolean isCorrect = q.getChoices().get(playerChoice - 1).getIsCorrect();
             questionsPlayed.getQuestionsPlayed().put(q, isCorrect);
         }
         // set end timestamp
@@ -210,14 +211,14 @@ public class P3 extends Lab03Game {
         EntityTransaction tx = null;
 
         Random r = new Random();
-        Game currentGame = (Game)game;
+        Game currentGame = (Game) game;
         // set start timestamp
         Date currentDate = new Date();
         long currentTime = currentDate.getTime();
         Timestamp currentTs = new Timestamp(currentTime);
         currentGame.settStart(currentTs);
         Map<Question, Boolean> played = new HashMap<>();
-        for( Object question: currentGame.getQuestionList() ) {
+        for (Object question: currentGame.getQuestionList()) {
             Question currentQuestion = (Question) question;
             List<Answer> answers = currentQuestion.getChoices();
             int selectedAnswer = r.nextInt(4);
@@ -269,7 +270,8 @@ public class P3 extends Lab03Game {
         EntityTransaction tx = null;
         Player result = null;
         try {
-            result = (Player) em.createQuery("select p from Player p where p.pName = '" + name + "'").getSingleResult();
+            result = (Player) em.createQuery(
+                    "select p from Player p where p.pName = '" + name + "'").getSingleResult();
         } catch (NoResultException nre) {
             Player newPlayer = new Player(name);
             try {
@@ -283,7 +285,8 @@ public class P3 extends Lab03Game {
                 }
                 throw e;
             }
-            result = (Player) em.createQuery("select p from Player p where p.pName = '" + name + "'").getSingleResult();
+            result = (Player) em.createQuery("select p from Player p where p.pName = '" +
+                    name + "'").getSingleResult();
 
             return result;
         }
@@ -302,11 +305,14 @@ public class P3 extends Lab03Game {
         Game g = (Game) game;
         int rightAnswers = 0;
         EntityManager em = lab02EntityManager.getEntityManager();
-        QuestionsPlayed result = (QuestionsPlayed) em.createQuery("select qp from QuestionsPlayed qp where qp.qpGame.gid = '" + g.getGid() + "'", QuestionsPlayed.class).getSingleResult();
+        QuestionsPlayed result = (QuestionsPlayed) em.createQuery(
+                "select qp from QuestionsPlayed qp where qp.qpGame.gid = '" + g.getGid() + "'",
+                QuestionsPlayed.class).getSingleResult();
 
         Map<Question, Boolean> questionsPlayed = result.getQuestionsPlayed();
-        for (java.util.Map.Entry<Question, Boolean> questionAnswerEntry : questionsPlayed.entrySet()) {
-            if(questionAnswerEntry.getValue()) {
+        for (java.util.Map.Entry<Question, Boolean> questionAnswerEntry :
+                questionsPlayed.entrySet()) {
+            if (questionAnswerEntry.getValue()) {
                 rightAnswers++;
             }
         }
@@ -339,7 +345,8 @@ public class P3 extends Lab03Game {
 
     private void printCategories() {
         EntityManager em = lab02EntityManager.getEntityManager();
-        List<Category> result = em.createQuery("select m from Category m ",Category.class).getResultList();
+        List<Category> result = em.createQuery(
+                "select m from Category m ", Category.class).getResultList();
         for (Category c : result) {
             System.out.println(c.getCid() + ". " + c.getName());
         }
@@ -347,7 +354,8 @@ public class P3 extends Lab03Game {
 
     private Category findCategory(int catID) {
         EntityManager em = lab02EntityManager.getEntityManager();
-        List<Category> result = em.createQuery("select m from Category m ",Category.class).getResultList();
+        List<Category> result = em.createQuery(
+                "select m from Category m ", Category.class).getResultList();
 
         for (Category c: result) {
             if (c.getCid() == catID) {
