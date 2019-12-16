@@ -9,5 +9,8 @@ import org.junit.runners.Suite;
                 Lab02Test.class,
                 Lab03Test.class}
 )
+/**
+ * Test-Suite.
+ */
 public class AllTests {
 }
