@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "category", schema = "db2p2")
-public class Category implements Serializable {
+public class Category {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "cid")

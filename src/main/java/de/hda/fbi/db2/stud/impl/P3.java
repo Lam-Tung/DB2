@@ -3,7 +3,6 @@ package de.hda.fbi.db2.stud.impl;
 import de.hda.fbi.db2.api.Lab03Game;
 import de.hda.fbi.db2.stud.entity.*;
 
-import javax.persistence.Entity;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;

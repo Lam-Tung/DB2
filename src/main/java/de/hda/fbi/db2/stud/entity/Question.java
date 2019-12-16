@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 @Entity
 @Table(name = "question", schema = "db2p2")
-public class Question implements Serializable {
+public class Question {
   @Id
   @Column(name = "questionid")
   private int qid;

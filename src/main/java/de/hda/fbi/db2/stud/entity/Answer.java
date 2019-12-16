@@ -9,7 +9,7 @@ import javax.persistence.Embeddable;
  * Answer class.
  */
 @Embeddable
-public class Answer implements Serializable {
+public class Answer {
   private String choice;
   private boolean isCorrect;
 

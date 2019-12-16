@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "questionsplayed", schema = "db2p2")
-public class QuestionsPlayed implements Serializable {
+public class QuestionsPlayed  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int qpid;
