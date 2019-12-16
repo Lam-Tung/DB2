@@ -27,7 +27,6 @@ public class P3 extends Lab03Game {
     @Override
     public Object createGame() {
         EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
         List<Question> questionList = new ArrayList<>();
         List<Category> catSelected = new ArrayList<>();
         Scanner in = new Scanner(System.in);
@@ -128,6 +127,7 @@ public class P3 extends Lab03Game {
         Game currentGame = (Game) game;
         Scanner in = new Scanner(System.in);
         EntityManager em = lab02EntityManager.getEntityManager();
+        EntityTransaction tx = null;
         Map<Question, Boolean> playerAnswers = new HashMap<>();
         QuestionsPlayed questionsPlayed = new QuestionsPlayed(currentGame, playerAnswers);
 
@@ -162,9 +162,19 @@ public class P3 extends Lab03Game {
         currentTs = new Timestamp(currentTime);
         currentGame.settEnd(currentTs);
 
-        // persist game
-        persistGame(currentGame);
-        //em.persist(questionsPlayed);
+//        // persist game & player choices
+//        try {
+//            tx = em.getTransaction();
+//            tx.begin();
+//            em.persist(questionsPlayed);
+//            tx.commit();
+//        } catch (RuntimeException e) {
+//            if (tx != null && tx.isActive()) {
+//                tx.rollback();
+//            }
+//            throw e;
+//        }
+
 
         // show stats
 //        System.out.println("Questions played: " + questionsPlayed.getQuestionsPlayed().size());
@@ -286,17 +296,19 @@ public class P3 extends Lab03Game {
     @Override
     public void persistGame(Object game) {
         EntityManager em = lab02EntityManager.getEntityManager();
-        em.persist(game);
-    }
-
-    private List<Category> convertToCategoryList (List<Object> objectList) {
-        List<Category> categoryList = new ArrayList<>();
-        for (Object o: objectList) {
-            Category c = (Category) o;
-            categoryList.add(c);
+        EntityTransaction tx = null;
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            Game g = (Game) game;
+            em.persist(g);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
         }
-
-        return categoryList;
     }
 
     private void printCategories() {

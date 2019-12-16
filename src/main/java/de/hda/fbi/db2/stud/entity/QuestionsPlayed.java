@@ -1,6 +1,7 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -9,14 +10,14 @@ import java.util.Map;
  */
 @Entity
 @Table(name = "questionsplayed", schema = "db2p2")
-public class QuestionsPlayed {
+public class QuestionsPlayed implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int qpid;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "game_fk_g_id", referencedColumnName = "gid")
+    @ManyToOne
+    @JoinColumn(name = "game_fk_gid", referencedColumnName = "gid")
     private Game qpGame;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Question qpQuestion;
     private Map<Question, Boolean> questionsPlayed;
 

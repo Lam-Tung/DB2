@@ -14,7 +14,7 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int gid;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private Player player;
 
     @Temporal(TemporalType.DATE)
@@ -23,15 +23,13 @@ public class Game {
     @Temporal(TemporalType.DATE)
     private Date tEnd;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Category> catSelected;
-
-    @OneToMany(mappedBy = "qpGame", cascade = CascadeType.PERSIST)
-    private List<QuestionsPlayed> qplist;
 
     private List<Question> questionList;
 
-
+    @OneToMany(targetEntity = QuestionsPlayed.class, mappedBy = "qpGame")
+    private List<QuestionsPlayed> questionsPlayed;
 
     public Game () {
     };
@@ -72,7 +70,7 @@ public class Game {
         return tStart;
     }
 
-    public void settStart(Timestamp tStart) {
+    public void settStart(Date tStart) {
         this.tStart = tStart;
     }
 
@@ -80,7 +78,7 @@ public class Game {
         return tEnd;
     }
 
-    public void settEnd(Timestamp tEnd) {
+    public void settEnd(Date tEnd) {
         this.tEnd = tEnd;
     }
 

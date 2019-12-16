@@ -1,6 +1,7 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
  */
 @Entity
 @Table(name = "question", schema = "db2p2")
-public class Question {
+public class Question implements Serializable {
   @Id
   @Column(name = "questionid")
   private int qid;
@@ -26,11 +27,8 @@ public class Question {
   @ManyToOne(cascade = CascadeType.PERSIST)
   private Category cat;
 
-  @ManyToOne(cascade = CascadeType.PERSIST)
-  private Game gameQuest;
-
-  @OneToMany(mappedBy = "qpQuestion", cascade = CascadeType.PERSIST)
-  private List<QuestionsPlayed> qpList;
+  @OneToMany(targetEntity = QuestionsPlayed.class, mappedBy = "qpQuestion")
+  private List<QuestionsPlayed> questionsPlayed;
 
   public Question() {}
 
@@ -40,12 +38,12 @@ public class Question {
     this.choices = choices;
   }
 
-  public int getID() {
+  public int getQid() {
     return qid;
   }
 
-  public void setID(int id) {
-    this.qid = id;
+  public void setQid(int qid) {
+    this.qid = qid;
   }
 
   public String getChallenge() {
@@ -60,7 +58,7 @@ public class Question {
     return choices;
   }
 
-  public void setChoices(ArrayList<Answer> choices) {
+  public void setChoices(List<Answer> choices) {
     this.choices = choices;
   }
 
@@ -91,11 +89,11 @@ public class Question {
       return false;
     }
     Question that = (Question) o;
-    return getID() == that.getID();
+    return getQid() == that.getQid();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getID());
+    return Objects.hash(getQid());
   }
 }

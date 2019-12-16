@@ -1,6 +1,7 @@
 package de.hda.fbi.db2.stud.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,7 +11,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "category", schema = "db2p2")
-public class Category {
+public class Category implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "cid")
@@ -19,6 +20,8 @@ public class Category {
   @Column(unique = true)
   private String name;
 
+  @ManyToMany(mappedBy = "catSelected")
+  private List<Game> games;
 
   @OneToMany(mappedBy = "cat", cascade = CascadeType.PERSIST)
   private List<Question> questionlist;
@@ -36,12 +39,20 @@ public class Category {
   public void printQuestions() {
     System.out.println("Category : " + name);
     for (Question q : this.questionlist){
-      System.out.println("ID: " + q.getID());
+      System.out.println("ID: " + q.getQid());
       System.out.println("Question: " + q.getChallenge());
       for (Answer a : q.getChoices()){
         System.out.println(a.getChoice() + " " + a.getIsCorrect());
       }
     }
+  }
+
+  public int getCid() {
+    return cid;
+  }
+
+  public void setCid(int cid) {
+    this.cid = cid;
   }
 
   public String getName() {
@@ -52,16 +63,16 @@ public class Category {
     this.name = name;
   }
 
+  public List<Game> getGames() {
+    return games;
+  }
+
+  public void setGames(List<Game> games) {
+    this.games = games;
+  }
+
   public List<Question> getQuestionlist() {
     return questionlist;
-  }
-
-  public void setQuestionlist(ArrayList<Question> questionlist) {
-    this.questionlist = questionlist;
-  }
-
-  public int getCid() {
-    return cid;
   }
 
   public void setQuestionlist(List<Question> questionlist) {

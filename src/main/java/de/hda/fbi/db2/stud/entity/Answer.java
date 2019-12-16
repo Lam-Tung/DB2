@@ -1,5 +1,6 @@
 package de.hda.fbi.db2.stud.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Embeddable;
 
@@ -8,7 +9,7 @@ import javax.persistence.Embeddable;
  * Answer class.
  */
 @Embeddable
-public class Answer {
+public class Answer implements Serializable {
   private String choice;
   private boolean isCorrect;
 
