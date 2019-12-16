@@ -27,9 +27,6 @@ public class Question implements Serializable {
   @ManyToOne(cascade = CascadeType.PERSIST)
   private Category cat;
 
-  @OneToMany(targetEntity = QuestionsPlayed.class, mappedBy = "qpQuestion")
-  private List<QuestionsPlayed> questionsPlayed;
-
   public Question() {}
 
   public Question(int qid, String challenge, ArrayList<Answer> choices) {

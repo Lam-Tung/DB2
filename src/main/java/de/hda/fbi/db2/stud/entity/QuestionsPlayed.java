@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Class which contains information about which questions were played.
@@ -14,11 +15,14 @@ public class QuestionsPlayed implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int qpid;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "game_fk_gid", referencedColumnName = "gid")
     private Game qpGame;
-    @ManyToOne
-    private Question qpQuestion;
+
+    @ElementCollection
+    @MapKeyColumn(name = "Question")
+    @Column(name = "value")
+    @CollectionTable(name="Map", schema = "db2p2", joinColumns = @JoinColumn(name = "qpid"))
     private Map<Question, Boolean> questionsPlayed;
 
     public QuestionsPlayed() {}
@@ -50,5 +54,23 @@ public class QuestionsPlayed implements Serializable {
 
     public void setQuestionsPlayed(Map<Question, Boolean> questionsPlayed) {
         this.questionsPlayed = questionsPlayed;
+    }
+
+    // Equals & hashCode
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof QuestionsPlayed)) {
+            return false;
+        }
+        QuestionsPlayed that = (QuestionsPlayed) o;
+        return getQpid() == that.getQpid();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getQpid());
     }
 }

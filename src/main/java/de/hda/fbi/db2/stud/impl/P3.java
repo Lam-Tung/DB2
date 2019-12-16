@@ -162,23 +162,23 @@ public class P3 extends Lab03Game {
         currentTs = new Timestamp(currentTime);
         currentGame.settEnd(currentTs);
 
-//        // persist game & player choices
-//        try {
-//            tx = em.getTransaction();
-//            tx.begin();
-//            em.persist(questionsPlayed);
-//            tx.commit();
-//        } catch (RuntimeException e) {
-//            if (tx != null && tx.isActive()) {
-//                tx.rollback();
-//            }
-//            throw e;
-//        }
+        // persist game & player choices
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            em.persist(questionsPlayed);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        }
 
 
         // show stats
-//        System.out.println("Questions played: " + questionsPlayed.getQuestionsPlayed().size());
-//        System.out.println("Correct Answers: " + getRightAnswers(currentGame));
+        System.out.println("Questions played: " + questionsPlayed.getQuestionsPlayed().size());
+        System.out.println("Correct Answers: " + getRightAnswers(currentGame));
 
     }
 
@@ -206,8 +206,16 @@ public class P3 extends Lab03Game {
      */
     @Override
     public void simulateGame(Object game) {
+        EntityManager em = lab02EntityManager.getEntityManager();
+        EntityTransaction tx = null;
+
         Random r = new Random();
         Game currentGame = (Game)game;
+        // set start timestamp
+        Date currentDate = new Date();
+        long currentTime = currentDate.getTime();
+        Timestamp currentTs = new Timestamp(currentTime);
+        currentGame.settStart(currentTs);
         Map<Question, Boolean> played = new HashMap<>();
         for( Object question: currentGame.getQuestionList() ) {
             Question currentQuestion = (Question) question;
@@ -216,7 +224,25 @@ public class P3 extends Lab03Game {
             Boolean isCorrect = answers.get(selectedAnswer).getIsCorrect();
             played.put(currentQuestion, isCorrect);
         }
-        //((Game) game).setQuestionsPlayed(played);
+        // set end timestamp
+        currentDate = new Date();
+        currentTime = currentDate.getTime();
+        currentTs = new Timestamp(currentTime);
+        currentGame.settEnd(currentTs);
+        QuestionsPlayed qp = new QuestionsPlayed(currentGame, played);
+
+        // persist game & player choices
+        try {
+            tx = em.getTransaction();
+            tx.begin();
+            em.persist(qp);
+            tx.commit();
+        } catch (RuntimeException e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        }
     }
 
     /**
@@ -276,7 +302,7 @@ public class P3 extends Lab03Game {
         Game g = (Game) game;
         int rightAnswers = 0;
         EntityManager em = lab02EntityManager.getEntityManager();
-        QuestionsPlayed result = (QuestionsPlayed) em.createQuery("select q from QuestionsPlayed q where q.qpGame = '" + g + "'", QuestionsPlayed.class).getSingleResult();
+        QuestionsPlayed result = (QuestionsPlayed) em.createQuery("select qp from QuestionsPlayed qp where qp.qpGame.gid = '" + g.getGid() + "'", QuestionsPlayed.class).getSingleResult();
 
         Map<Question, Boolean> questionsPlayed = result.getQuestionsPlayed();
         for (java.util.Map.Entry<Question, Boolean> questionAnswerEntry : questionsPlayed.entrySet()) {
@@ -295,20 +321,20 @@ public class P3 extends Lab03Game {
      */
     @Override
     public void persistGame(Object game) {
-        EntityManager em = lab02EntityManager.getEntityManager();
-        EntityTransaction tx = null;
-        try {
-            tx = em.getTransaction();
-            tx.begin();
-            Game g = (Game) game;
-            em.persist(g);
-            tx.commit();
-        } catch (RuntimeException e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
-            throw e;
-        }
+//        EntityManager em = lab02EntityManager.getEntityManager();
+//        EntityTransaction tx = null;
+//        try {
+//            tx = em.getTransaction();
+//            tx.begin();
+//            Game g = (Game) game;
+//            em.persist(g);
+//            tx.commit();
+//        } catch (RuntimeException e) {
+//            if (tx != null && tx.isActive()) {
+//                tx.rollback();
+//            }
+//            throw e;
+//        }
     }
 
     private void printCategories() {
