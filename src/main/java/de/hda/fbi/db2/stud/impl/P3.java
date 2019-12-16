@@ -28,7 +28,7 @@ public class P3 extends Lab03Game {
         EntityManager em = lab02EntityManager.getEntityManager();
         List<Question> questionList = new ArrayList<>();
         List<Category> catSelected = new ArrayList<>();
-        Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in, "UTF-8");
         Game newGame = new Game();
 
         System.out.println("Type in playername: ");
@@ -124,7 +124,7 @@ public class P3 extends Lab03Game {
     @Override
     public void playGame(Object game) {
         Game currentGame = (Game) game;
-        Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in, "UTF-8");
         EntityManager em = lab02EntityManager.getEntityManager();
         EntityTransaction tx = null;
         Map<Question, Boolean> playerAnswers = new HashMap<>();
@@ -132,9 +132,7 @@ public class P3 extends Lab03Game {
 
         // set start timestamp
         Date currentDate = new Date();
-        long currentTime = currentDate.getTime();
-        Timestamp currentTs = new Timestamp(currentTime);
-        currentGame.settStart(currentTs);
+        currentGame.settStart(new Timestamp(currentDate.getTime()));
         // play the questions
         for (Question q : currentGame.getQuestionList()) {
             System.out.println(q.getChallenge());
@@ -157,10 +155,7 @@ public class P3 extends Lab03Game {
             questionsPlayed.getQuestionsPlayed().put(q, isCorrect);
         }
         // set end timestamp
-        currentDate = new Date();
-        currentTime = currentDate.getTime();
-        currentTs = new Timestamp(currentTime);
-        currentGame.settEnd(currentTs);
+        currentGame.settEnd(new Timestamp(currentDate.getTime()));
 
         // persist game & player choices
         try {
@@ -213,9 +208,7 @@ public class P3 extends Lab03Game {
         Game currentGame = (Game) game;
         // set start timestamp
         Date currentDate = new Date();
-        long currentTime = currentDate.getTime();
-        Timestamp currentTs = new Timestamp(currentTime);
-        currentGame.settStart(currentTs);
+        currentGame.settStart(new Timestamp(currentDate.getTime()));
         Map<Question, Boolean> played = new HashMap<>();
         for (Object question: currentGame.getQuestionList()) {
             Question currentQuestion = (Question) question;
@@ -226,9 +219,7 @@ public class P3 extends Lab03Game {
         }
         // set end timestamp
         currentDate = new Date();
-        currentTime = currentDate.getTime();
-        currentTs = new Timestamp(currentTime);
-        currentGame.settEnd(currentTs);
+        currentGame.settEnd(new Timestamp(currentDate.getTime()));
         QuestionsPlayed qp = new QuestionsPlayed(currentGame, played);
 
         // persist game & player choices

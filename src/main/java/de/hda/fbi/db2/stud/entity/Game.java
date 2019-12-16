@@ -67,19 +67,21 @@ public class Game {
     }
 
     public Date gettStart() {
-        return tStart;
+        Date startdate = new Date(tStart.getTime());
+        return startdate;
     }
 
     public void settStart(Date tStart) {
-        this.tStart = tStart;
+        this.tStart = new Date(tStart.getTime());
     }
 
     public Date gettEnd() {
-        return tEnd;
+        Date enddate = new Date(tEnd.getTime());
+        return enddate;
     }
 
     public void settEnd(Date tEnd) {
-        this.tEnd = tEnd;
+        this.tEnd = new Date(tEnd.getTime());
     }
 
     public List<Category> getCatSelected() {
