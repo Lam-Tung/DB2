@@ -30,7 +30,6 @@ public class P3 extends Lab03Game {
         EntityTransaction tx = null;
         List<Question> questionList = new ArrayList<>();
         List<Category> catSelected = new ArrayList<>();
-        Map<Question, Boolean> questionsPlayed = new HashMap<>();
         Scanner in = new Scanner(System.in);
         Game newGame = new Game();
 
@@ -104,7 +103,9 @@ public class P3 extends Lab03Game {
             }
 
             for (int i = 0; i < amtQuestions; i++) {
-                questionList.add(shuffledQuestionsFromCategory.get(i));
+                if (!questionList.contains(shuffledQuestionsFromCategory.get(i))) {
+                    questionList.add(shuffledQuestionsFromCategory.get(i));
+                }
             }
         }
         Collections.shuffle(questionList);
@@ -112,7 +113,7 @@ public class P3 extends Lab03Game {
         newGame.setPlayer(dbplayer);
         newGame.setCatSelected(catSelected);
         newGame.setQuestionList(questionList);
-        newGame.setQuestionsPlayed(questionsPlayed);
+
 
         return newGame;
     }
@@ -127,6 +128,8 @@ public class P3 extends Lab03Game {
         Game currentGame = (Game) game;
         Scanner in = new Scanner(System.in);
         EntityManager em = lab02EntityManager.getEntityManager();
+        Map<Question, Boolean> playerAnswers = new HashMap<>();
+        QuestionsPlayed questionsPlayed = new QuestionsPlayed(currentGame, playerAnswers);
 
         // set start timestamp
         Date currentDate = new Date();
@@ -149,8 +152,9 @@ public class P3 extends Lab03Game {
                 System.out.println("Wrong answer! Correct answer is: " + q.getCorrectChoice().getChoice());
             }
 
-            // add to QuestionsPlayed with the player choices
-            currentGame.getQuestionsPlayed().put(q, q.getChoices().get(playerChoice-1).getIsCorrect());
+            // add to QuestionsPlayed
+            boolean isCorrect = q.getChoices().get(playerChoice-1).getIsCorrect();
+            questionsPlayed.getQuestionsPlayed().put(q, isCorrect);
         }
         // set end timestamp
         currentDate = new Date();
@@ -160,11 +164,11 @@ public class P3 extends Lab03Game {
 
         // persist game
         persistGame(currentGame);
-        em.persist(currentGame.getPlayer());
+        //em.persist(questionsPlayed);
 
         // show stats
-        System.out.println("Questions played: " + currentGame.getQuestionsPlayed().size());
-        System.out.println("Correct Answers: " + getRightAnswers(currentGame));
+//        System.out.println("Questions played: " + questionsPlayed.getQuestionsPlayed().size());
+//        System.out.println("Correct Answers: " + getRightAnswers(currentGame));
 
     }
 
@@ -202,7 +206,7 @@ public class P3 extends Lab03Game {
             Boolean isCorrect = answers.get(selectedAnswer).getIsCorrect();
             played.put(currentQuestion, isCorrect);
         }
-        ((Game) game).setQuestionsPlayed(played);
+        //((Game) game).setQuestionsPlayed(played);
     }
 
     /**
@@ -261,8 +265,10 @@ public class P3 extends Lab03Game {
     public int getRightAnswers(Object game) {
         Game g = (Game) game;
         int rightAnswers = 0;
+        EntityManager em = lab02EntityManager.getEntityManager();
+        QuestionsPlayed result = (QuestionsPlayed) em.createQuery("select q from QuestionsPlayed q where q.qpGame = '" + g + "'", QuestionsPlayed.class).getSingleResult();
 
-        Map<Question, Boolean> questionsPlayed = g.getQuestionsPlayed();
+        Map<Question, Boolean> questionsPlayed = result.getQuestionsPlayed();
         for (java.util.Map.Entry<Question, Boolean> questionAnswerEntry : questionsPlayed.entrySet()) {
             if(questionAnswerEntry.getValue()) {
                 rightAnswers++;
@@ -291,16 +297,6 @@ public class P3 extends Lab03Game {
         }
 
         return categoryList;
-    }
-
-    private List<Question> convertToQuestionList (List<Object> objectList) {
-        List<Question> questionList = new ArrayList<>();
-        for (Object o: objectList) {
-            Question q = (Question) o;
-            questionList.add(q);
-        }
-
-        return questionList;
     }
 
     private void printCategories() {

@@ -29,6 +29,9 @@ public class Question {
   @ManyToOne(cascade = CascadeType.PERSIST)
   private Game gameQuest;
 
+  @OneToMany(mappedBy = "qpQuestion", cascade = CascadeType.PERSIST)
+  private List<QuestionsPlayed> qpList;
+
   public Question() {}
 
   public Question(int qid, String challenge, ArrayList<Answer> choices) {

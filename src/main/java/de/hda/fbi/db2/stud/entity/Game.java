@@ -26,10 +26,12 @@ public class Game {
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Category> catSelected;
 
-    @OneToMany(mappedBy = "gameQuest", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "qpGame", cascade = CascadeType.PERSIST)
+    private List<QuestionsPlayed> qplist;
+
     private List<Question> questionList;
 
-    private Map<Question, Boolean> questionsPlayed;
+
 
     public Game () {
     };
@@ -96,14 +98,6 @@ public class Game {
 
     public void setQuestionList(List<Question> questionList) {
         this.questionList = questionList;
-    }
-
-    public Map<Question, Boolean> getQuestionsPlayed() {
-        return questionsPlayed;
-    }
-
-    public void setQuestionsPlayed(Map<Question, Boolean> questionsPlayed) {
-        this.questionsPlayed = questionsPlayed;
     }
 
     // Equals & hashCode
