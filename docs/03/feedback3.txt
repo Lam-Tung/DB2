@@ -10,3 +10,6 @@ Bitte beheben Sie die folgende(s) Problem(e) bis spätestens Montag 16.12.19 23:
 
 Bitte beheben Sie die Probleme und stellen Sie sicher, dass Ihr Spiel
 gemäß den Abnahmekriterien spielbar ist und datenbankseitig persistiert wird.
+
+
+Ich habe keine gravierenden Mängel mehr an Ihrem Praktikum gefunden und in meiner Liste die Aufgabe als bestanden markiert.
