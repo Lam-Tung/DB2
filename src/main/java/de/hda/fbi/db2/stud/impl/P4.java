@@ -5,7 +5,10 @@ import de.hda.fbi.db2.stud.entity.*;
 
 
 import javax.persistence.EntityManager;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Implementation of Lab04MassData.
@@ -17,6 +20,8 @@ public class P4 extends Lab04MassData {
     final int GAMES_PER_PLAYER = 100;
     final int AMT_CATEGORY = 6;
     final int QUESTION_PER_CATEGORY = 3;
+    final int TIMEFRAME_DAYS = 21;
+    final int PLAYTIME_MS = 500000;
     private Map<Player, List<QuestionsPlayed>> thingsToPersist;
 
     @Override
@@ -118,15 +123,20 @@ public class P4 extends Lab04MassData {
             List<Game> gamesToSimulate = pair.getValue();
             for (Game g : gamesToSimulate) {
                 Map<Question, Boolean> playerChoices = new HashMap<>();
-                Date startDate = getRandomDate();
-                g.settStart(startDate);
+                long now = new Date().getTime();
+                long aDay = TimeUnit.DAYS.toMillis(1);
+                Date startDate = new Date(now);
+                Date endDate = new Date(now + aDay * TIMEFRAME_DAYS);
+                Date randomStartDate = getRandomDate(startDate, endDate);
+                g.settStart(randomStartDate);
                 for (Question q: g.getQuestionList()) {
                     List<Answer> answers = q.getChoices();
                     int selectedAnswer = RANDOM.nextInt(4);
                     Boolean isCorrect = answers.get(selectedAnswer).getIsCorrect();
                     playerChoices.put(q, isCorrect);
                 }
-                g.settEnd(startDate); //TODO +5 min oder so
+                Date randomEndDate = new Date(randomStartDate.getTime() + PLAYTIME_MS);
+                g.settEnd(randomEndDate);
                 QuestionsPlayed questionsPlayed = new QuestionsPlayed(g, playerChoices);
                 result.add(questionsPlayed);
             }
@@ -134,8 +144,13 @@ public class P4 extends Lab04MassData {
         return result;
     }
 
-    private Date getRandomDate() {
-        return null;
-    }
+    private Date getRandomDate(Date startDate, Date endDate) {
+        long startMillis = startDate.getTime();
+        long endMillis = endDate.getTime();
+        long randomMillisSinceEpoch = ThreadLocalRandom
+                .current()
+                .nextLong(startMillis, endMillis);
 
+        return new Date (randomMillisSinceEpoch);
+    }
 }
