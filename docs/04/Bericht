@@ -1,0 +1,44 @@
+Aufgabe 1
+
+Massendatengenerierung Dauer: 27 min
+
+Es ist sinnvoll die flush()- und clear()- Methode zu benutzen. flush() synchronisiert den gesamten Persistenzkontext
+mit der Datenbank und clear() detached alle Objekte und holt sie aus dem Persistenzkontext raus
+(ist nötig damit der Cache geleert wird).
+Start der Transaktion beginnt nachdem 100 Spieler und ihre dazugehörigen Games im Persistenzkontext sind. In einer
+Transaktion werden dann die Daten der 100 Spieler + Games committed.
+
+Für bessere Performance:
+
+- zuerst alle Daten generiert und dann nur noch persistieren
+- commit nur für jede 100 spieler und nicht einzeln -> weniger Transaktionen
+
+Queries:
+
+List<Player> dbPlayers = em.createQuery("select p from Player p ", Player.class).getResultList();
+        for (Player p :
+                dbPlayers) {
+            System.out.println(p.getpName());
+        }
+-> Spielernamen wurden geprintet und sind unique (auch richtige Anzahl)
+
+List<Game> dbGames = em.createQuery("select g from Game g ", Game.class).getResultList();
+        for (Game g :
+                dbGames) {
+            System.out.println(g.getGid());
+            System.out.println(g.gettStart());
+            System.out.println(g.gettEnd());
+        }
+
+-> Daten sind korrekt
+
+Aufgabe 2
+
+Beim Batch Writing werden mehre SQL-Insert/Update-Statements für eine Relation zu einem großen SQL-Statement
+zusammengefasst. Wie viele Statements zusammengefasst werden hängt von der Batch-size ab.  Setzen wir die
+Batch-size beispielsweise auf 1000, und persistieren  innerhalb einer Transaktion 1000 Objekte der Entitätsklasse
+„QuestionsPlayed“, so wird nur ein SQL-Statement für alle 1000 Objekte erstellt.
+Das Einfügen in die Datenbank ist jetzt eine Operation und nicht 1000 einzelne.
+
+ohne Batch : 100 Player in 2 min
+mit Batch : 600 Player in 2 min
