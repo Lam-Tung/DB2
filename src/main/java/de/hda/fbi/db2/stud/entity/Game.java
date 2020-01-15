@@ -50,6 +50,10 @@ public class Game {
         this.questionList = questionList;
     }
 
+    public List<QuestionsPlayed> getQuestionsPlayed() {
+        return questionsPlayed;
+    }
+
     public int getGid() {
         return gid;
     }

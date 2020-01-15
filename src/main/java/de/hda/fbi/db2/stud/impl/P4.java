@@ -5,6 +5,7 @@ import de.hda.fbi.db2.stud.entity.*;
 
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -22,7 +23,6 @@ public class P4 extends Lab04MassData {
     final int QUESTION_PER_CATEGORY = 3;
     final int TIMEFRAME_DAYS = 21;
     final int PLAYTIME_MS = 500000;
-    private Map<Player, List<QuestionsPlayed>> thingsToPersist;
 
     @Override
     public void createMassData() {
@@ -30,9 +30,45 @@ public class P4 extends Lab04MassData {
         // jeweils 100 games
         // zeitraum mind. 2 wochen
         // zwischen 10 und 20 fragen
-        thingsToPersist = new HashMap<>();
-        List<Player> players = generatePlayers();
 
+        EntityManager em = lab02EntityManager.getEntityManager();
+        EntityTransaction tx = null;
+        List<Player> players = generatePlayers();
+        Map<Player, List<Game>> unplayedMap = generateGamesForPlayers(players);
+        Map<Player, List<QuestionsPlayed>> playedMap = simulateGames(unplayedMap);
+        int clearCounter = 0;
+        int counter = 0;
+
+        for (java.util.Map.Entry<Player, List<QuestionsPlayed>> playerQPListEntry :
+                playedMap.entrySet()) {
+            Player p = playerQPListEntry.getKey();
+            List<QuestionsPlayed> qpListToPersist = playerQPListEntry.getValue();
+            try {
+
+                em.persist(p);
+                for (QuestionsPlayed qp : qpListToPersist) {
+                    em.persist(qp);
+                }
+                clearCounter++;
+                if (clearCounter >= 100) {
+                    counter++;
+                    System.out.println(counter);
+                    tx = em.getTransaction();
+                    tx.begin();
+                    em.flush();
+                    em.clear();
+                    tx.commit();
+                    clearCounter = 0;
+                }
+
+
+            } catch (RuntimeException e) {
+                if (tx != null && tx.isActive()) {
+                    tx.rollback();
+                }
+                throw e;
+            }
+        }
     }
 
     // generate players
@@ -67,8 +103,8 @@ public class P4 extends Lab04MassData {
         EntityManager em = lab02EntityManager.getEntityManager();
         List<Category> categoryList = em.createQuery(
                 "select c from Category c ", Category.class).getResultList();
-        Map<Player, List<Game>> result = new HashMap<>();
 
+        Map<Player, List<Game>> result = new HashMap<>();
         for (Player p : players) {
             List<Game> gameList = new ArrayList<>();
             while (gameList.size() < GAMES_PER_PLAYER) {
@@ -79,13 +115,56 @@ public class P4 extends Lab04MassData {
             result.put(p, gameList);
         }
         return result;
+
+    }
+
+    // simulates all games of players and returns a list of QuestionsPlayed (to be persited)
+    private Map<Player, List<QuestionsPlayed>> simulateGames(Map<Player, List<Game>> unplayedMap) {
+        Map<Player, List<QuestionsPlayed>> result = new HashMap<>();
+
+        for (java.util.Map.Entry<Player, List<Game>> playerGameListEntry :
+                unplayedMap.entrySet()) {
+            Player p = playerGameListEntry.getKey();
+            List<Game> unplayed = playerGameListEntry.getValue();
+            List<QuestionsPlayed> qpList = new ArrayList<>();
+
+            for (Game g : unplayed) {
+                Map<Question, Boolean> playerChoices = new HashMap<>();
+                long now = new Date().getTime();
+                long aDay = TimeUnit.DAYS.toMillis(1);
+                Date startDate = new Date(now);
+                Date endDate = new Date(now + aDay * TIMEFRAME_DAYS);
+                Date randomStartDate = getRandomDate(startDate, endDate);
+                g.settStart(randomStartDate);
+
+                for (Question q: g.getQuestionList()) {
+                    List<Answer> answers = q.getChoices();
+                    int selectedAnswer = RANDOM.nextInt(4);
+                    Boolean isCorrect = answers.get(selectedAnswer).getIsCorrect();
+                    playerChoices.put(q, isCorrect);
+                }
+
+                Date randomEndDate = new Date(randomStartDate.getTime() + PLAYTIME_MS);
+                g.settEnd(randomEndDate);
+                QuestionsPlayed questionsPlayed = new QuestionsPlayed(g, playerChoices);
+                qpList.add(questionsPlayed);
+            }
+            result.put(p, qpList);
+        }
+
+        return result;
     }
 
     // returns a random category list from the given category list
     private List<Category> selectRandomCategories(List<Category> categoryList) {
         List<Category> result = new ArrayList<>();
-        for (int i = 0; i < AMT_CATEGORY; i++) {
-            result.add(categoryList.get(RANDOM.nextInt(categoryList.size())));
+        while (result.size() < AMT_CATEGORY) {
+            Category c = categoryList.get(RANDOM.nextInt(categoryList.size()));
+            if (!result.contains(c)) {
+                result.add(c);
+            }
+
+
         }
         return result;
     }
@@ -114,36 +193,7 @@ public class P4 extends Lab04MassData {
         return result;
     }
 
-    // simulates all games of players and returns a list of QuestionsPlayed (to be persited)
-    private List<QuestionsPlayed> simulateGames(Map<Player, List<Game>> playersUnplayedGames) {
-        List<QuestionsPlayed> result = new ArrayList<>();
-        Iterator<Map.Entry<Player, List<Game>>> it = playersUnplayedGames.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<Player, List<Game>> pair = (Map.Entry<Player, List<Game>>) it.next();
-            List<Game> gamesToSimulate = pair.getValue();
-            for (Game g : gamesToSimulate) {
-                Map<Question, Boolean> playerChoices = new HashMap<>();
-                long now = new Date().getTime();
-                long aDay = TimeUnit.DAYS.toMillis(1);
-                Date startDate = new Date(now);
-                Date endDate = new Date(now + aDay * TIMEFRAME_DAYS);
-                Date randomStartDate = getRandomDate(startDate, endDate);
-                g.settStart(randomStartDate);
-                for (Question q: g.getQuestionList()) {
-                    List<Answer> answers = q.getChoices();
-                    int selectedAnswer = RANDOM.nextInt(4);
-                    Boolean isCorrect = answers.get(selectedAnswer).getIsCorrect();
-                    playerChoices.put(q, isCorrect);
-                }
-                Date randomEndDate = new Date(randomStartDate.getTime() + PLAYTIME_MS);
-                g.settEnd(randomEndDate);
-                QuestionsPlayed questionsPlayed = new QuestionsPlayed(g, playerChoices);
-                result.add(questionsPlayed);
-            }
-        }
-        return result;
-    }
-
+    // returns a randon date between start and end parameter
     private Date getRandomDate(Date startDate, Date endDate) {
         long startMillis = startDate.getTime();
         long endMillis = endDate.getTime();

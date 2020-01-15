@@ -23,7 +23,7 @@ public class Category {
   @ManyToMany(mappedBy = "catSelected")
   private List<Game> games;
 
-  @OneToMany(mappedBy = "cat", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "cat")
   private List<Question> questionlist;
 
   public Category(){}
